@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="7680px"
+   height="4320px"
+   viewBox="0 0 7680 4320"
+   version="1.1"
+   id="SVGRoot"
+   sodipodi:docname="marble.svg"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs833" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.1767767"
+     inkscape:cx="1038.0327"
+     inkscape:cy="1227.5373"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="1320"
+     inkscape:window-height="864"
+     inkscape:window-x="4506"
+     inkscape:window-y="26"
+     inkscape:window-maximized="0"
+     inkscape:pagecheckerboard="false" />
+  <metadata
+     id="metadata836">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <ellipse
+       style="fill:#333333;fill-rule:evenodd;stroke:#000000;stroke-width:2.00002;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1"
+       id="path932"
+       cx="145.31078"
+       cy="148.76604"
+       inkscape:export-filename="C:\Users\marsh\Google Drive\Images\game stuff\Marble.png"
+       inkscape:export-xdpi="13.53"
+       inkscape:export-ydpi="13.53"
+       rx="144.31076"
+       ry="142.35025" />
+    <ellipse
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:2.00002;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:0.676647"
+       id="path932-1"
+       cx="147.6638"
+       cy="143.35027"
+       inkscape:export-filename="C:\Users\marsh\Google Drive\Images\game stuff\Marble.png"
+       inkscape:export-xdpi="13.53"
+       inkscape:export-ydpi="13.53"
+       rx="144.31076"
+       ry="142.35025" />
+  </g>
+</svg>
