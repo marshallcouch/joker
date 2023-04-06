@@ -311,11 +311,11 @@ func _show_hand():
 	#if get_viewport().size.x *.9 != hand_panel.size.x:
 	hand_container.set_position(Vector2(get_viewport().size.x *.05,get_viewport().size.y *.05 ))
 	hand_container.set_size( Vector2(get_viewport().size.x *.9,get_viewport().size.y *.5 ))
-	cards_in_hand_list.custom_minimum_size = \
-	Vector2(get_viewport().size.x *.9,get_viewport().size.y *.45)
+#	cards_in_hand_list.minimum_size = \
+#	Vector2(get_viewport().size.x *.9,get_viewport().size.y *.45)
 	
-	hand_panel.set_position(hand_container.position)
-	hand_panel.size = Vector2(get_viewport().size.x *.9,get_viewport().size.y *.55 )
+#	hand_panel.set_position(hand_container.position)
+#	hand_panel.size = Vector2(get_viewport().size.x *.9,get_viewport().size.y *.55 )
 	if hand_canvas.visible:
 		hand_canvas.hide()
 	else:
