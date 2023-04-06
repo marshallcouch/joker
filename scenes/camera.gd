@@ -11,6 +11,7 @@ const PANEL_WIDTH = 140
 const PAN_SPEED = 10
 signal show_hand
 signal menu
+var not_draggable:bool = true
 var camera_action: String = ""
 
 func _ready() -> void:
@@ -27,27 +28,17 @@ func _on_viewport_size_changed():
 	else:
 		$ActionPanel.transform = Transform2D(0,Vector2(20,20))
 
-func _process(delta):
-	if camera_action == "":
-		return
-	elif camera_action == "left":
-		 offset_h -= 1 * delta * PAN_SPEED
-	elif camera_action == "right":
-		offset_h += 1 * delta * PAN_SPEED
-	elif camera_action == "down":
-		offset_v += 1 * delta * PAN_SPEED
-	elif camera_action == "up":
-		offset_v -= 1 * delta * PAN_SPEED
-	elif camera_action == "zoom_in":
-		zoom += zoom_speed * delta
-	elif camera_action == "zoom_out":
-		zoom -= zoom_speed * delta 
 
 func _on_recenter_button_pressed() -> void:
-	offset_v = 0
-	offset_h = 0
+	position.x = 0
+	position.y = 0
 	zoom = Vector2(1080/get_viewport().size.y,1080/get_viewport().size.y)
 
+func _process(delta):
+	if camera_action == "zoom_in":
+		zoom -= zoom_speed * delta
+	elif camera_action == "zoom_out":
+		zoom += zoom_speed * delta 
 
 func _on_HandButton_pressed() -> void:
 	emit_signal("show_hand")
@@ -57,9 +48,10 @@ func _on_ActionButtonMenu_pressed() -> void:
 	emit_signal("menu") # Replace with function body.
 
 
-func _on_move_button_pressed(action:String):
+func _on_move_button_down(action:String)-> void:
 	self.camera_action = action
 
 
 func _on_move_button_up():
 	camera_action = "" # Replace with function body.
+
