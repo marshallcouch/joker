@@ -44,7 +44,7 @@ text = "Discard Pile"
 
 [node name="Boards" type="Node" parent="."]
 
-[node name="BoardSprite" type="Sprite" parent="Boards"]
+[node name="BoardSprite4" type="Sprite" parent="Boards"]
 texture = ExtResource( 3 )
 
 [node name="JokerBoard6" type="Sprite" parent="Boards"]

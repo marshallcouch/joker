@@ -4,122 +4,165 @@ class_name Networking
 var is_server:bool = false
 var is_client:bool = false
 var is_connected:bool = false
-var peer = null
-var player_list:Array = []
-const DEFAULT_PORT = 8181
-const DEFAULT_SERVER = "localhost"
+var server: TCP_Server
+var server_clients: Array = []
+var http_client:HTTPClient = null
+const DEFAULT_PORT:int = 8282
+const DEFAULT_SERVER:String = "localhost"
+var HEADERS = [ "User-Agent: Pirulo/1.0 (Godot)", "Accept: */*"]
+signal data_received(data,peer_id) #dictionary of the message received, String ID of the client
+signal peer_connected(peer_id)
+signal peer_disconnected(peer_id)
+var last_status:int = -1
+var player_name:String = uuid.v4()
+var debug_networking = false
+var client_packet_buffer: Array = []
 
+class Client:
+	var stream_peer: StreamPeerTCP
+	var id: String
+	var packet_buffer: Array = []
+	
 func _ready() -> void:
-	print_debug("networking created")
+	pass
 
-func start_game(port:int = DEFAULT_PORT):
-	print_debug("hosting_game on port " + String(port) + "...")
+func start_server(port:int = DEFAULT_PORT) -> Networking:
+	print_debug("hosting_game on port " + str(port) + "...")
 	is_server = true
-	peer = WebSocketServer.new()
-	peer.connect("client_connected", self, "_peer_connected")
-	peer.connect("client_disconnected", self, "_peer_disconnected")
-	peer.connect("client_close_request", self, "_peer_disconnected")
-	peer.connect("data_received", self, "_on_data")
-	var err = peer.listen(port, ['my-protocol'], false)
+	server = TCP_Server.new()
+	var err = server.listen(port)
 	if err != OK:
-		set_process(false)
-		print_debug("error starting server " + String(err))
+		print_debug("error starting server " + str(err))
+	return self
 
-
-func join_game(server:String = DEFAULT_SERVER, port:int = DEFAULT_PORT, player_name:String = "player"):
-	var ws_url = "ws://" + server + ":" + String(port)
-	print_debug("joining game " + ws_url + "...")
+func set_player_name(new_name:String) -> Networking:
+	player_name = new_name
+	return self
+	
+func join_game(server:String = DEFAULT_SERVER, port:int = DEFAULT_PORT) -> Networking:
+	var url = server + ":" + str(port)
 	is_client = true
-	peer = WebSocketClient.new()
-	peer.connect("connection_closed", self, "disconnect_game")
-	peer.connect("connection_error", self, "disconnect_game")
-	peer.connect("connection_established", self, "_server_connected")
-	peer.connect("data_received", self, "_on_data")
-	var err = peer.connect_to_url(ws_url,['my-protocol'], false)
-	if err != OK:
-		print_debug("Unable to connect " + String(err))
-		set_process(false)
-	else:
-		print_debug("connecting...")
-	
+	http_client = HTTPClient.new()
+	var err = http_client.connect_to_host(server, port)
+	assert(err == OK)
+	return self
 
 
-func stop_game():
-	disconnect_game()
-	
-#both
-func disconnect_game(error = 0):
-	
-	#server
-	if is_server:
-		peer.stop()
-		if peer.is_connected("client_connected", self, "_peer_connected"):
-			peer.disconnect("client_connected", self, "_peer_connected")
-		if peer.is_connected("client_disconnected", self, "_peer_disconnected"):
-			peer.disconnect("client_disconnected", self, "_peer_disconnected")
-		if peer.is_connected("client_close_request", self, "_peer_disconnected"):
-			peer.disconnect("client_close_request", self, "_peer_disconnected")
-		is_server = false
-
-	#client
+func stop_game() -> Networking:
 	if is_client:
-		if peer.is_connected("connection_closed", self, "_disconnect_game"):
-			peer.disconnect("connection_closed", self, "_disconnect_game")
-		if peer.is_connected("connection_error", self, "_disconnect_game"):
-			peer.disconnect("connection_error", self, "_disconnect_game")
-		if peer.is_connected("connection_established", self, "_server_connected"):
-			peer.disconnect("connection_established", self, "_server_connected")
+		http_client.close()
+		http_client = null
 		is_client = false
-	#both
-	if peer.is_connected("data_received", self, "_on_data"):
-		peer.disconnect("data_received", self, "_on_data")
-		
-	print_debug("Disconnected")
 
-
-#when the game client has connected to the server
-func _server_connected(proto):
-	print_debug("This client is now connected to server")
-	send_packet("test packet from client")
-
-#server has peer connected
-func _peer_connected(id,proto):
-	print_debug("player connected to server:" + String(id))
-	player_list.append({"player_id":id,"player_name":"default"})
-	send_packet("test packet from server",id)
-
-#server has a peer disconnected
-func _peer_disconnected(id):
-	print_debug("peer disconnected")
-	for i in player_list.size():
-		if id == player_list[i]["player_id"]:
-			player_list.remove(i)
-
-func broadcast_to_peers(broadcast_content:String) -> void:
-	pass
-
-func broadcast():
-	pass
-
-func send_packet(packet_content:String,peer_id:int = 1) -> void:
-	if is_client:
-		peer.get_peer(peer_id).put_packet(packet_content.to_utf8())
 	if is_server:
-		peer.get_peer(peer_id).put_packet(packet_content.to_utf8())
-	
-	
+		server.stop()
+		server = null
+		is_server = false
+		
+	return self
+
+
+func get_time()-> String:
+	var t = Time.get_datetime_dict_from_system()
+	var mt = Time.get_ticks_msec()
+	return str(t["hour"]) +":" + str(t["minute"]) +":"+ \
+	str(t["second"]) + " - " + str(mt) + " - "
+
+
+func send_packet(packet_content:String,peer_id:String = "", broadcast:bool = false) -> void:
+	if is_client:
+		client_packet_buffer.append(packet_content)
+	if is_server:
+		for client in server_clients:
+			if client.id == peer_id or broadcast:
+				client.packet_buffer.append(packet_content)
+
+
 func _process(_delta):
-	if is_client or is_server:
-		peer.poll()
+	if is_server:
+		server_poll()
+	if is_client:
+		client_poll()
+
+
+func client_poll():
+	http_client.poll()	
+	if last_status != http_client.get_status():
+		last_status = http_client.get_status()
+		print(http_client.get_status())
+	#this is where the client polls to see if there is any updated state
+	if http_client.get_status() == http_client.STATUS_CONNECTED:
+		if client_packet_buffer.size() > 0:
+			http_client.request(HTTPClient.METHOD_POST,"/",HEADERS,client_packet_buffer.pop_front())
+		else:
+			http_client.request(HTTPClient.METHOD_POST,"/",HEADERS,JSON.stringify({"action":"poll", "player_name":player_name}))
+	if http_client.has_response():
+		# If there is a response...
+		var headers = http_client.get_response_headers() # Get response headers.
+		print("headers: ", headers)
+		print("code: ", http_client.get_response_code()) # Show response code.
+		# Getting the HTTP Body
+		if !http_client.is_response_chunked():
+			# Or just plain Content-Length
+			var bl = http_client.get_response_body_length()
+
+		# This method works for both anyway
+		var rb:PoolByteArray # Array that will hold the data.
+		if http_client.get_status() == HTTPClient.STATUS_BODY:
+			var chunk = http_client.read_response_body_chunk()
+			if chunk.size() == 0:
+				if not OS.has_feature("web"):
+					OS.delay_usec(20)
+				else:
+					yield()
+					Engine.get_main_loop()
+			else:
+				rb = rb + chunk # Append to read buffer.
+		var message_json:String = rb.get_string_from_ascii()
+		if !message_json.find('"status":"connected"'):
+			emit_signal("data_received", message_json,"")
+
+
+func server_poll() -> void:
+	if server.is_connection_available():
+		var client = Client.new()
+		client.stream_peer = server.take_connection()
+		client.id = uuid.v4()
+		server_clients.append(client)
+		client.stream_peer.set_no_delay(true)
+		if debug_networking:
+			print("Client connected: " + client.id)
+#		var response:Dictionary = {"status":"Connected"}
+#		client.stream_peer.put_data(write_server_http_message(JSON.stringify(response)))
+		emit_signal("peer_connected", client.id)
+		#client.disconnect_from_host()
+
+	for client in server_clients:
+		if client.stream_peer.get_connected_host():
+			var data = client.stream_peer.get_available_bytes()
+			if data > 0:
+				var message = client.stream_peer.get_string(data)
+				if debug_networking:
+					print("Received message: " + message)
+				#client.stream_peer.put_data(write_server_http_message("Got it!"))
+				var message_json:String = message.substr(message.find("{"))
+				if !message_json.find('"action":"poll",'):
+					emit_signal("data_received",message_json,client.id)
+				if client.packet_buffer.size() > 0:
+					client.stream_peer.put_data(write_server_http_message(client.packet_buffer.pop_front()))
+				else:
+					client.stream_peer.put_data(write_server_http_message(JSON.stringify({"status":"connected"})))
+
+
+func write_server_http_message(body:String) -> PoolByteArray:
+	if debug_networking:
+		print("message sent: " + body)
+	var msg = "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *"
+	msg += "\r\nContent-Type: application/json\r\nContent-Length:" 
+	msg += str(body.to_utf8().size())
+	msg += "\r\n\r\n"
+	msg += body
+	return msg.to_utf8()
+	
 		
-		
-func _on_data(id:int = 0) -> void:
-	var pkt = peer.get_peer(id).get_packet().get_string_from_utf8()
-	print_debug("Got data from client %d: %s " % [id, pkt])
-#	if is_server:
-#		print_debug("server got data")
-#		peer.get_peer(id).get_packet().get_string_from_utf8()
-#	elif is_client:
-#		print_debug("client got data")
-#		 String(peer.get_peer(1).get_packet().get_string_from_utf8())
 
