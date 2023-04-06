@@ -1,9 +1,9 @@
 extends Node2D
 class_name Piece
 const ICONS_IN_FOLDER = 20
-var base_sprite:Node
-var icon_sprite:Node
-var piece_base:Node
+var base_sprite
+var icon_sprite
+var piece_base
 var piece_id:String
 var icon:String
 var icon_index:int = 0
@@ -80,6 +80,6 @@ func update_position(new_position: Vector2) -> void:
 
 func _to_string() -> String:
 	var json_form = self.to_dictionary()
-	return JSON.stringify(json_form)
+	return JSON.print(json_form)
 	
 	

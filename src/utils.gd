@@ -34,3 +34,11 @@ static func setup_standard_deck(with_jokers:bool = false,unlimited:bool = false)
 	
 	return {"type":"standard","name":"standard","cards":new_deck_cards, \
 	"jokers":with_jokers, "unlimited":unlimited}
+
+
+static func json_to_string(json:Dictionary) -> String:
+	return JSON.print(json)
+	
+static func string_to_json(json:String) -> Dictionary:
+	var p = JSON.parse(json)
+	return p.result

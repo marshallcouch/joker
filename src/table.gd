@@ -2,24 +2,24 @@ extends Node2D
 
 var decks: Array = []
 var players: Array = []
-var start_menu:Node
-var start_panel:Node
-var start_menu_vbox:Node
-var discard_pile:Node
-var cards_in_hand_list:Node
-var hand_container:Node
-var hand_panel:Node
-var hand_canvas:Node
-var pieces:Node
-var camera:Node
-var server_label:Node
-var server_text_box:Node
-var player_name_label:Node
-var player_name_text_box:Node
-var connect_button:Node
-var join_button:Node
-var start_game_button:Node
-var disconnect_game_button:Node
+var start_menu
+var start_panel
+var start_menu_vbox
+var discard_pile
+var cards_in_hand_list
+var hand_container
+var hand_panel
+var hand_canvas
+var pieces
+var camera
+var server_label
+var server_text_box
+var player_name_label
+var player_name_text_box
+var connect_button
+var join_button
+var start_game_button
+var disconnect_game_button
 var networking:Networking = Networking.new()
 
 func _set_onready_variables() ->void:
@@ -65,13 +65,11 @@ func _ready() -> void:
 
 
 func _show_start_menu():
-	if get_viewport().size.x *.8 != start_menu_vbox.size.x:
-		start_panel.size = get_viewport().size
-		start_menu_vbox.size \
-			= Vector2(get_viewport().size.x *.8 \
-			,get_viewport().size.y  )
-		start_menu_vbox.position \
-			= Vector2(get_viewport().size.x *.1,0)
+#	start_menu_vbox.size \
+#		= Vector2(get_viewport().size.x *.8 \
+#		,get_viewport().size.y  )
+#	start_menu_vbox.position \
+#		= Vector2(get_viewport().size.x *.1,0)
 	if start_menu.visible:
 		start_menu.hide()
 	else:
@@ -86,10 +84,11 @@ func _setup_game(player_count:int = 6):
 		8: 
 			$Boards/JokerBoard8.show()
 	discard_pile.show()
-		
+	var piece_preload = preload("res://scenes/pieces/Piece.tscn")
 	for i in 8:
 		for j in 5:
-			var piece = load("res://scenes/pieces/Piece.tscn").instantiate()
+			
+			var piece = piece_preload.instance()
 			pieces.add_child(piece)
 			piece.set_base_color(i).set_icon_color(7).scale_piece(Vector2(1,1)).set_icon(i+1)
 			piece.position = Vector2(-100+(1+i)*20,-100+(1+j)*20)
@@ -187,7 +186,7 @@ func _player_connected(peer_id):
 		boards.append("JokerBoard8")
 		
 	response.merge({"boards":boards})
-	networking.send_packet(JSON.stringify(response),peer_id)
+	networking.send_packet(Utils.json_to_string(response),peer_id)
 	#todo: send gamestate
 
 
@@ -204,7 +203,7 @@ func _on_hand_button_pressed(action):
 		"draw":
 			if networking.is_client:
 				var d:Dictionary = {"action":"draw","deck":""}
-				networking.send_packet(JSON.stringify(d))
+				networking.send_packet(Utils.json_to_string(d))
 		"discard":
 			if networking.is_client:
 				var selected_card_idx:int = -1
@@ -214,7 +213,7 @@ func _on_hand_button_pressed(action):
 				if selected_card_idx > -1:
 					cards_in_hand_list.remove_item(selected_card_idx)
 				var d:Dictionary = {"action":"discard","card":selected_card}
-				networking.send_packet(JSON.stringify(d))
+				networking.send_packet(Utils.json_to_string(d))
 		"close":
 			hand_canvas.hide()
 			
@@ -250,7 +249,7 @@ func _draw_card(message_dict:Dictionary,peer_id) -> void:
 			if player.id == peer_id:
 				player.hand.append(card)
 		var response:Dictionary = {"action":"draw", "card":card}
-		networking.send_packet(JSON.stringify(response),peer_id)
+		networking.send_packet(Utils.json_to_string(response),peer_id)
 	elif networking.is_client:
 		cards_in_hand_list.add_item(message_dict["card"]["name"])
 
@@ -268,7 +267,7 @@ func _discard_card(message_dict:Dictionary,peer_id) -> void:
 				if idx > -1:
 					discard_pile.discard(player.hand.pop_at(idx))
 	var response:Dictionary = {"status":"success", "requested_action":"discard"}
-	networking.send_packet(JSON.stringify(response),peer_id)
+	networking.send_packet(Utils.json_to_string(response),peer_id)
 		
 func play_card(card_to_play:Dictionary) -> void:
 	pass
@@ -277,13 +276,13 @@ func _update_piece_position(new_position:Vector2, piece_id, local:bool = true):
 	#if it's local, send it to the server, if it's not local then we got it from the network and need to update
 	# if we are the server we need to pass it along to the other clients.
 	if local and networking.is_client:
-		networking.send_packet(JSON.stringify({"action":"update_piece_location","pid":piece_id,"pos":[new_position.x,new_position.y]}))
+		networking.send_packet(Utils.json_to_string({"action":"update_piece_location","pid":piece_id,"pos":[new_position.x,new_position.y]}))
 	else:
 		for piece in pieces.get_children():
 			if piece.piece_id == piece_id:
 				piece.update_position(new_position)
 	if networking.is_server:
-		networking.send_packet(JSON.stringify({"action":"update_piece_location","pid":piece_id,"pos":[new_position.x,new_position.y]}),"",true)
+		networking.send_packet(Utils.json_to_string({"action":"update_piece_location","pid":piece_id,"pos":[new_position.x,new_position.y]}),"",true)
 	
 func _set_game_state(message_dict:Dictionary) -> void:
 	#reset state to blank
@@ -294,7 +293,7 @@ func _set_game_state(message_dict:Dictionary) -> void:
 	if message_dict.has("pieces"):
 		for piece in message_dict["pieces"]:
 			var new_piece = load("res://scenes/pieces/Piece.tscn").instantiate()
-			pieces.add_child(new_piece)
+			pieces.add_child(new_piece) 
 			new_piece.from_dictionary(piece)
 			new_piece.connect("new_position",self, "_update_piece_position")
 			

@@ -13,6 +13,8 @@ func _ready() -> void:
 func on_click() -> void:
 	pass
 
+func not_draggable() -> void:
+	pass
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta: float) -> void:
 #	pass

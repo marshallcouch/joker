@@ -22,7 +22,7 @@ func _input(event):
 		for shape in shapes:
 			if shape["collider"].has_method("on_click"):
 				shape["collider"].on_click()
-				if shape["collider"].has_variable("not_draggable"):
+				if shape["collider"].has_method("not_draggable"):
 					break
 				dragging_shape = shape["collider"]
 				if !click_all and ignore_unclickable:

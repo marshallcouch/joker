@@ -95,7 +95,7 @@ func client_poll():
 		if client_packet_buffer.size() > 0:
 			http_client.request(HTTPClient.METHOD_POST,"/",HEADERS,client_packet_buffer.pop_front())
 		else:
-			http_client.request(HTTPClient.METHOD_POST,"/",HEADERS,JSON.stringify({"action":"poll", "player_name":player_name}))
+			http_client.request(HTTPClient.METHOD_POST,"/",HEADERS,Utils.json_to_string({"action":"poll", "player_name":player_name}))
 	if http_client.has_response():
 		# If there is a response...
 		var headers = http_client.get_response_headers() # Get response headers.
@@ -151,7 +151,7 @@ func server_poll() -> void:
 				if client.packet_buffer.size() > 0:
 					client.stream_peer.put_data(write_server_http_message(client.packet_buffer.pop_front()))
 				else:
-					client.stream_peer.put_data(write_server_http_message(JSON.stringify({"status":"connected"})))
+					client.stream_peer.put_data(write_server_http_message(Utils.json_to_string({"status":"connected"})))
 
 
 func write_server_http_message(body:String) -> PoolByteArray:

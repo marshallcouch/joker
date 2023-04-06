@@ -11,7 +11,6 @@ const PANEL_WIDTH = 140
 const PAN_SPEED = 10
 signal show_hand
 signal menu
-var not_draggable:bool = true
 var camera_action: String = ""
 
 func _ready() -> void:
