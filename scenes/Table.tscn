@@ -243,5 +243,9 @@ texture = ExtResource( 4 )
 [connection signal="pressed" from="Controls/StartMenu/StartMenuPanel/StartMenuVbox/DisconnectGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "disconnect" ]]
 [connection signal="pressed" from="Controls/StartMenu/StartMenuPanel/StartMenuVbox/ReturnToGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "return_to_game" ]]
 [connection signal="pressed" from="Controls/StartMenu/StartMenuPanel/StartMenuVbox/QuitButton" to="." method="_on_start_menu_button_pressed" binds= [ "quit" ]]
+[connection signal="pressed" from="Controls/HandCanvas/HandContainer/HandActionsContainer/PlayButton" to="." method="_on_hand_button_pressed" binds= [ "play" ]]
+[connection signal="pressed" from="Controls/HandCanvas/HandContainer/HandActionsContainer/DiscardButton" to="." method="_on_hand_button_pressed" binds= [ "discard" ]]
+[connection signal="pressed" from="Controls/HandCanvas/HandContainer/HandActionsContainer/DrawButton" to="." method="_on_hand_button_pressed" binds= [ "draw" ]]
+[connection signal="pressed" from="Controls/HandCanvas/HandContainer/HandActionsContainer/CloseButton" to="." method="_on_hand_button_pressed" binds= [ "close" ]]
 
 [editable path="Controls/Camera"]

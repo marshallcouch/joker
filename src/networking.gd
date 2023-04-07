@@ -15,7 +15,7 @@ signal peer_connected(peer_id)
 signal peer_disconnected(peer_id)
 var last_status:int = -1
 var player_name:String = uuid.v4()
-var debug_networking = false
+var debug_networking = true
 var client_packet_buffer: Array = []
 
 class Client:
@@ -142,11 +142,12 @@ func server_poll() -> void:
 			var data = client.stream_peer.get_available_bytes()
 			if data > 0:
 				var message = client.stream_peer.get_string(data)
-				if debug_networking == true:
+				var message_json:String = message.substr(message.find("{"))
+				if debug_networking == true and message_json.find('"action":"poll",') < 0:
 					print("Received message: " + message)
 				#client.stream_peer.put_data(write_server_http_message("Got it!"))
-				var message_json:String = message.substr(message.find("{"))
-				if !message_json.find('"action":"poll",'):
+				
+				if message_json.find('"action":"poll",') < 0:
 					emit_signal("data_received",message_json,client.id)
 				if client.packet_buffer.size() > 0:
 					client.stream_peer.put_data(write_server_http_message(client.packet_buffer.pop_front()))
