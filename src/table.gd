@@ -21,6 +21,7 @@ var join_button
 var start_game_button
 var disconnect_game_button
 var networking:Networking = Networking.new()
+var piece_preload = preload("res://scenes/pieces/Piece.tscn")
 
 func _set_onready_variables() ->void:
 	start_menu = $Controls/StartMenu
@@ -84,10 +85,9 @@ func _setup_game(player_count:int = 6):
 		8: 
 			$Boards/JokerBoard8.show()
 	discard_pile.show()
-	var piece_preload = preload("res://scenes/pieces/Piece.tscn")
+	
 	for i in 8:
 		for j in 5:
-			
 			var piece = piece_preload.instance()
 			pieces.add_child(piece)
 			piece.set_base_color(i).set_icon_color(7).scale_piece(Vector2(1,1)).set_icon(i+1)
@@ -221,9 +221,7 @@ func _on_hand_button_pressed(action):
 
 func _data_received(message:String,peer_id):
 	var message_dict = {}
-	message_dict = JSON.parse_string(message)
-	if !message_dict.has("action"):
-		return
+	message_dict = Utils.string_to_json(message)
 	if message_dict["action"] == "draw":
 		_draw_card(message_dict,peer_id)
 	if message_dict["action"] == "discard":
@@ -289,10 +287,9 @@ func _set_game_state(message_dict:Dictionary) -> void:
 	for piece in pieces.get_children():
 		pieces.remove_child(piece)
 	
-	
 	if message_dict.has("pieces"):
 		for piece in message_dict["pieces"]:
-			var new_piece = load("res://scenes/pieces/Piece.tscn").instantiate()
+			var new_piece = piece_preload.instance()
 			pieces.add_child(new_piece) 
 			new_piece.from_dictionary(piece)
 			new_piece.connect("new_position",self, "_update_piece_position")
@@ -308,14 +305,10 @@ func _set_game_state(message_dict:Dictionary) -> void:
 		
 
 func _show_hand():
-	#if get_viewport().size.x *.9 != hand_panel.size.x:
-	hand_container.set_position(Vector2(get_viewport().size.x *.05,get_viewport().size.y *.05 ))
-	hand_container.set_size( Vector2(get_viewport().size.x *.9,get_viewport().size.y *.5 ))
-#	cards_in_hand_list.minimum_size = \
-#	Vector2(get_viewport().size.x *.9,get_viewport().size.y *.45)
+	hand_container.set_position(Vector2(get_viewport().size.x *.1,get_viewport().size.y *.4))
+	hand_container.set_size( Vector2(get_viewport().size.x *.8,get_viewport().size.y *.6 ))
+
 	
-#	hand_panel.set_position(hand_container.position)
-#	hand_panel.size = Vector2(get_viewport().size.x *.9,get_viewport().size.y *.55 )
 	if hand_canvas.visible:
 		hand_canvas.hide()
 	else:

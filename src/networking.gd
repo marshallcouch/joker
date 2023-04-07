@@ -119,7 +119,7 @@ func client_poll():
 			else:
 				rb = rb + chunk # Append to read buffer.
 		var message_json:String = rb.get_string_from_ascii()
-		if !message_json.find('"status":"connected"'):
+		if message_json.find('"action":')>0:
 			emit_signal("data_received", message_json,"")
 
 
@@ -142,7 +142,7 @@ func server_poll() -> void:
 			var data = client.stream_peer.get_available_bytes()
 			if data > 0:
 				var message = client.stream_peer.get_string(data)
-				if debug_networking:
+				if debug_networking == true:
 					print("Received message: " + message)
 				#client.stream_peer.put_data(write_server_http_message("Got it!"))
 				var message_json:String = message.substr(message.find("{"))
@@ -155,7 +155,7 @@ func server_poll() -> void:
 
 
 func write_server_http_message(body:String) -> PoolByteArray:
-	if debug_networking:
+	if debug_networking == true:
 		print("message sent: " + body)
 	var msg = "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *"
 	msg += "\r\nContent-Type: application/json\r\nContent-Length:" 

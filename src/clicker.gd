@@ -22,8 +22,6 @@ func _input(event):
 		for shape in shapes:
 			if shape["collider"].has_method("on_click"):
 				shape["collider"].on_click()
-				if shape["collider"].has_method("not_draggable"):
-					break
 				dragging_shape = shape["collider"]
 				if !click_all and ignore_unclickable:
 					break # Thus clicks only the topmost clickable
@@ -33,17 +31,21 @@ func _input(event):
 		
 	if event is InputEventMouseButton and !event.pressed and event.button_index == 1 and is_dragging: 
 		if dragging_shape:
-			dragging_shape.on_release()
+			if dragging_shape.has_method("on_release"):
+				dragging_shape.on_release()
 			dragging_shape = null
 		is_dragging = false
 		
-	if is_dragging and event is InputEventMouseMotion and dragging_shape:
-		dragging_shape.position += (event.position - previous_mouse_position) / camera.zoom  
-		previous_mouse_position = event.position
-		
-	if is_dragging and event is InputEventMouseMotion and !dragging_shape:
-		camera.position -= (event.position - previous_mouse_position) / camera.zoom  
-		previous_mouse_position = event.position
+	
+	if is_dragging and event is InputEventMouseMotion:		
+		#moving a piece
+		if dragging_shape:
+			dragging_shape.position += (event.position - previous_mouse_position) / camera.zoom 
+		#moving the camera
+		else:
+			camera.position -= (event.position - previous_mouse_position) / camera.zoom 
+		previous_mouse_position = event.position 
+	
 
 			
 func setup_camera():

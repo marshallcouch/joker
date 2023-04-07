@@ -37,7 +37,8 @@ static func setup_standard_deck(with_jokers:bool = false,unlimited:bool = false)
 
 
 static func json_to_string(json:Dictionary) -> String:
-	return JSON.print(json)
+	var stringjson = JSON.print(json)
+	return stringjson
 	
 static func string_to_json(json:String) -> Dictionary:
 	var p = JSON.parse(json)
