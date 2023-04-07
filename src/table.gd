@@ -27,10 +27,10 @@ func _set_onready_variables() ->void:
 	start_panel = $Controls/StartMenu/StartMenuPanel
 	start_menu_vbox = $Controls/StartMenu/StartMenuPanel/StartMenuVbox
 	discard_pile = $Cards/DiscardArea
-	cards_in_hand_list = $Controls/Camera/HandCanvas/HandContainer/CardsInHand
-	hand_container = $Controls/Camera/HandCanvas/HandContainer
-	hand_panel = $Controls/Camera/HandCanvas/HandPanel
-	hand_canvas = $Controls/Camera/HandCanvas
+	cards_in_hand_list = $Controls/HandCanvas/HandContainer/CardsInHand
+	hand_container = $Controls/HandCanvas/HandContainer
+	hand_panel = $Controls/HandCanvas/HandPanel
+	hand_canvas = $Controls/HandCanvas
 	pieces = $Pieces
 	camera = $Controls/Camera
 	server_label = $Controls/StartMenu/StartMenuPanel/StartMenuVbox/ServerLabel
