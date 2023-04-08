@@ -34,14 +34,14 @@ func _set_onready_variables() ->void:
 	hand_canvas = $Controls/HandCanvas
 	pieces = $Pieces
 	camera = $Controls/Camera
-	server_label = $Controls/StartMenu/StartMenuPanel/StartMenuVbox/ServerLabel
-	server_text_box = $Controls/StartMenu/StartMenuPanel/StartMenuVbox/ServerTextBox
-	player_name_label = $Controls/StartMenu/StartMenuPanel/StartMenuVbox/PlayerNameLabel
-	player_name_text_box = $Controls/StartMenu/StartMenuPanel/StartMenuVbox/PlayerNameTextBox
-	connect_button = $Controls/StartMenu/StartMenuPanel/StartMenuVbox/ConnectGameButton
-	join_button = $Controls/StartMenu/StartMenuPanel/StartMenuVbox/JoinGameButton
-	start_game_button = $Controls/StartMenu/StartMenuPanel/StartMenuVbox/StartGameButton
-	disconnect_game_button = $Controls/StartMenu/StartMenuPanel/StartMenuVbox/DisconnectGameButton
+	server_label = $Controls/StartMenu/StartMenuVbox/ServerLabel
+	server_text_box = $Controls/StartMenu/StartMenuVbox/ServerTextBox
+	player_name_label = $Controls/StartMenu/StartMenuVbox/PlayerNameLabel
+	player_name_text_box = $Controls/StartMenu/StartMenuVbox/PlayerNameTextBox
+	connect_button = $Controls/StartMenu/StartMenuVbox/ConnectGameButton
+	join_button = $Controls/StartMenu/StartMenuVbox/JoinGameButton
+	start_game_button = $Controls/StartMenu/StartMenuVbox/StartGameButton
+	disconnect_game_button = $Controls/StartMenu/StartMenuVbox/DisconnectGameButton
 
 class Player:
 	var id:String
@@ -64,17 +64,12 @@ func _ready() -> void:
 	camera.connect("menu",self,"_show_start_menu")
 
 
-
 func _show_start_menu():
-#	start_menu_vbox.size \
-#		= Vector2(get_viewport().size.x *.8 \
-#		,get_viewport().size.y  )
-#	start_menu_vbox.position \
-#		= Vector2(get_viewport().size.x *.1,0)
 	if start_menu.visible:
 		start_menu.hide()
 	else:
 		start_menu.show()
+
 
 func _setup_game(player_count:int = 6):
 	match player_count:
@@ -85,7 +80,10 @@ func _setup_game(player_count:int = 6):
 		8: 
 			$Boards/JokerBoard8.show()
 	discard_pile.show()
-	
+	_set_start_button_visibility(false)
+	start_menu.hide()
+	_setup_server()
+	#load pieces
 	for i in 8:
 		for j in 5:
 			var piece = piece_preload.instance()
@@ -96,17 +94,12 @@ func _setup_game(player_count:int = 6):
 			print(piece)
 
 
-func _on_DebugButton_pressed() -> void:
-	#discard_pile.discard(server_draw_card())
-	pass
-
-
+func _input(event) -> void:
+	if event.is_action_pressed("ui_menu"):
+		_show_start_menu()
 
 func _on_start_menu_button_pressed(button_pressed: String) -> void:
 	if button_pressed == "start_game":
-		_set_start_button_visibility(false)
-		start_menu.hide()
-		_setup_server()
 		_setup_game()
 	elif button_pressed == "join_game":
 		if server_label.visible:
@@ -137,7 +130,28 @@ func _on_start_menu_button_pressed(button_pressed: String) -> void:
 		start_menu.hide()
 	elif button_pressed == "quit":
 		get_tree().quit()
-	
+
+
+func _on_hand_button_pressed(action):
+	match action:
+		"play":
+			pass
+		"draw":
+			if networking.is_client:
+				var d:Dictionary = {"action":"draw","deck":""}
+				networking.send_packet(Utils.json_to_string(d))
+		"discard":
+			if networking.is_client:
+				var selected_card_idx:int = -1
+				for c in cards_in_hand_list.get_selected_items():
+					selected_card_idx = c
+				var selected_card: String = cards_in_hand_list.get_item_text(selected_card_idx)
+				if selected_card_idx > -1:
+					cards_in_hand_list.remove_item(selected_card_idx)
+				var d:Dictionary = {"action":"discard","card":selected_card}
+				networking.send_packet(Utils.json_to_string(d))
+		"close":
+			hand_canvas.hide()
 
 
 func _set_start_button_visibility(visible:bool = true):
@@ -153,15 +167,33 @@ func _set_start_button_visibility(visible:bool = true):
 
 func _setup_server():
 	networking.start_server()
+	var ip_text:String = ""
+	
+	if OS.has_feature("windows"):
+		if OS.has_enviroment("COMPUTERNAME"):
+			ip_text =  IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")),1)
+		if OS.has_enviroment("HOSTNAME"):
+			ip_text =  IP.resolve_hostname(str(OS.get_environment("HOSTNAME")),1)
+	elif OS.has_feature("x11"):
+		if OS.has_enviroment("HOSTNAME"):
+			ip_text =  IP.resolve_hostname(str(OS.get_environment("HOSTNAME")),1)
+	elif OS.has_feature("OSX"):
+		if OS.has_enviroment("HOSTNAME"):
+			ip_text =  IP.resolve_hostname(str(OS.get_environment("HOSTNAME")),1)
+	if ip_text == "":
+		for ip in IP.get_local_addresses():
+			if ip.find('192.168.1') > -1:
+				ip_text += ip + "\n"
+	if ip_text == "":
+		for ip in IP.get_local_addresses():
+			if ip.find(".") > 0:
+				ip_text += ip + "\n"
+	var game_file_text = "Game App: upgames.us/joker\n"
+	camera.set_server_info_label(game_file_text + "Server IP: " + ip_text )
 
 
 func _setup_client():
 	networking.join_game(server_text_box.text)
-
-
-func _input(event) -> void:
-	if event.is_action_pressed("ui_menu"):
-		_show_start_menu()
 
 
 func _setup_deck() -> void:
@@ -196,29 +228,6 @@ func _player_disconnected(peer_id):
 			players.pop_at(i)
 
 
-func _on_hand_button_pressed(action):
-	match action:
-		"play":
-			pass
-		"draw":
-			if networking.is_client:
-				var d:Dictionary = {"action":"draw","deck":""}
-				networking.send_packet(Utils.json_to_string(d))
-		"discard":
-			if networking.is_client:
-				var selected_card_idx:int = -1
-				for c in cards_in_hand_list.get_selected_items():
-					selected_card_idx = c
-				var selected_card: String = cards_in_hand_list.get_item_text(selected_card_idx)
-				if selected_card_idx > -1:
-					cards_in_hand_list.remove_item(selected_card_idx)
-				var d:Dictionary = {"action":"discard","card":selected_card}
-				networking.send_packet(Utils.json_to_string(d))
-		"close":
-			hand_canvas.hide()
-			
-
-
 func _data_received(message:String,peer_id):
 	var message_dict = {}
 	message_dict = Utils.string_to_json(message)
@@ -230,7 +239,6 @@ func _data_received(message:String,peer_id):
 		_update_piece_position(Vector2(message_dict["pos"][0],message_dict["pos"][1]),message_dict["pid"],false)
 	if message_dict["action"] == "set_game_state":
 		_set_game_state(message_dict)
-
 
 
 func _draw_card(message_dict:Dictionary,peer_id) -> void:
@@ -250,6 +258,7 @@ func _draw_card(message_dict:Dictionary,peer_id) -> void:
 		networking.send_packet(Utils.json_to_string(response),peer_id)
 	elif networking.is_client:
 		cards_in_hand_list.add_item(message_dict["card"]["name"])
+
 
 func _discard_card(message_dict:Dictionary,peer_id) -> void:
 	if networking.is_server:
@@ -306,9 +315,7 @@ func _set_game_state(message_dict:Dictionary) -> void:
 
 func _show_hand():
 	hand_container.set_position(Vector2(get_viewport().size.x *.1,get_viewport().size.y *.4))
-	hand_container.set_size( Vector2(get_viewport().size.x *.8,get_viewport().size.y *.6 ))
-
-	
+	hand_container.set_size( Vector2(get_viewport().size.x *.8,get_viewport().size.y *5 ))
 	if hand_canvas.visible:
 		hand_canvas.hide()
 	else:

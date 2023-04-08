@@ -38,9 +38,10 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Jokers and Marbles"
+config/name="Joker"
 run/main_scene="res://scenes/Table.tscn"
-config/icon="res://icon.png"
+config/icon="res://assets/icons/icon.png"
+config/windows_native_icon="res://assets/icons/Icon.ico"
 
 [autoload]
 

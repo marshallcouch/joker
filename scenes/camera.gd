@@ -7,7 +7,6 @@ var previous_mouse_position = Vector2()
 var is_dragging = false
 var over_something = false
 var scroll_zooming_enabled = true
-const PANEL_WIDTH = 140
 const PAN_SPEED = 10
 signal show_hand
 signal menu
@@ -17,12 +16,14 @@ func _ready() -> void:
 	get_tree().root.connect("size_changed",self,"_on_viewport_size_changed")
 	_on_viewport_size_changed()
 	
-	
+func set_server_info_label(new_text:String) ->void:
+	$ActionPanel/ServerInfoLabel.text = new_text
+
 func _on_viewport_size_changed():
 	if get_viewport().size.x < 1000:
 		$ActionPanel.transform = Transform2D(0,Vector2(
-			get_viewport().size.x *.5 - (.5*PANEL_WIDTH)\
-			,get_viewport().size.y - 180))
+			get_viewport().size.x *.5 - (.5*$ActionPanel/HBoxContainer.rect_size.x)\
+			,get_viewport().size.y - 100))
 		zoom = Vector2(1080/get_viewport().size.y,1080/get_viewport().size.y)
 	else:
 		$ActionPanel.transform = Transform2D(0,Vector2(20,20))

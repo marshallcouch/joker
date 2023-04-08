@@ -1,20 +1,7 @@
-extends Area2D
-
-
-# Declare member variables here. Examples:
-# var a: int = 2
-# var b: String = "text"
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
+extends Node2D
 
 func on_click() -> void:
-	pass
-
-func not_draggable() -> void:
-	pass
+	print_debug("cam area")
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta: float) -> void:
 #	pass

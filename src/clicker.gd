@@ -2,7 +2,7 @@ extends Node2D
 
 
 var click_all = false
-var ignore_unclickable = true
+var ignore_unclickable = false
 var previous_mouse_position = Vector2()
 var is_dragging:bool = false
 var dragging_shape
@@ -40,10 +40,11 @@ func _input(event):
 	if is_dragging and event is InputEventMouseMotion:		
 		#moving a piece
 		if dragging_shape:
-			dragging_shape.position += (event.position - previous_mouse_position) / camera.zoom 
+			if dragging_shape.has_method("draggable"):
+				dragging_shape.position += (event.position - previous_mouse_position) * camera.zoom 
 		#moving the camera
 		else:
-			camera.position -= (event.position - previous_mouse_position) / camera.zoom 
+			camera.position -= (event.position - previous_mouse_position) * camera.zoom 
 		previous_mouse_position = event.position 
 	
 

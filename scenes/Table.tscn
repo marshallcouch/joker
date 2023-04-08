@@ -81,84 +81,8 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-
-[node name="StartMenuVbox" type="VBoxContainer" parent="Controls/StartMenu/StartMenuPanel"]
 grow_horizontal = 2
 grow_vertical = 2
-alignment = 1
-
-[node name="StartGameButton" type="Button" parent="Controls/StartMenu/StartMenuPanel/StartMenuVbox"]
-margin_right = 115.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 0, 50 )
-text = "Start Game"
-
-[node name="JoinGameButton" type="Button" parent="Controls/StartMenu/StartMenuPanel/StartMenuVbox"]
-margin_top = 54.0
-margin_right = 115.0
-margin_bottom = 104.0
-rect_min_size = Vector2( 0, 50 )
-text = "Join Game"
-
-[node name="ServerLabel" type="Label" parent="Controls/StartMenu/StartMenuPanel/StartMenuVbox"]
-visible = false
-margin_top = 88.0
-margin_right = 115.0
-margin_bottom = 102.0
-text = "Server:"
-
-[node name="ServerTextBox" type="TextEdit" parent="Controls/StartMenu/StartMenuPanel/StartMenuVbox"]
-visible = false
-margin_top = 106.0
-margin_right = 115.0
-margin_bottom = 146.0
-rect_min_size = Vector2( 50, 40 )
-text = "localhost"
-
-[node name="PlayerNameLabel" type="Label" parent="Controls/StartMenu/StartMenuPanel/StartMenuVbox"]
-visible = false
-margin_top = 150.0
-margin_right = 115.0
-margin_bottom = 164.0
-text = "Player Name:"
-
-[node name="PlayerNameTextBox" type="TextEdit" parent="Controls/StartMenu/StartMenuPanel/StartMenuVbox"]
-visible = false
-margin_top = 168.0
-margin_right = 115.0
-margin_bottom = 208.0
-rect_min_size = Vector2( 50, 40 )
-text = "Player"
-
-[node name="ConnectGameButton" type="Button" parent="Controls/StartMenu/StartMenuPanel/StartMenuVbox"]
-visible = false
-margin_top = 68.0
-margin_right = 115.0
-margin_bottom = 108.0
-rect_min_size = Vector2( 0, 50 )
-text = "Connect"
-
-[node name="DisconnectGameButton" type="Button" parent="Controls/StartMenu/StartMenuPanel/StartMenuVbox"]
-visible = false
-margin_top = 68.0
-margin_right = 115.0
-margin_bottom = 108.0
-rect_min_size = Vector2( 0, 50 )
-text = "Disconnect"
-
-[node name="ReturnToGameButton" type="Button" parent="Controls/StartMenu/StartMenuPanel/StartMenuVbox"]
-margin_top = 108.0
-margin_right = 115.0
-margin_bottom = 158.0
-rect_min_size = Vector2( 0, 50 )
-text = "Return To Game"
-
-[node name="QuitButton" type="Button" parent="Controls/StartMenu/StartMenuPanel/StartMenuVbox"]
-margin_top = 162.0
-margin_right = 115.0
-margin_bottom = 212.0
-rect_min_size = Vector2( 0, 50 )
-text = "Quit"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Controls/StartMenu"]
 margin_left = 55.0
@@ -168,6 +92,92 @@ margin_bottom = 97.0
 
 [node name="ServerName" type="TextEdit" parent="Controls/StartMenu/VBoxContainer"]
 margin_right = 40.0
+
+[node name="StartMenuVbox" type="VBoxContainer" parent="Controls/StartMenu"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -57.5
+margin_top = -106.0
+margin_right = 57.5
+margin_bottom = 106.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="StartGameButton" type="Button" parent="Controls/StartMenu/StartMenuVbox"]
+margin_right = 115.0
+margin_bottom = 50.0
+rect_min_size = Vector2( 0, 50 )
+text = "Start Game"
+
+[node name="JoinGameButton" type="Button" parent="Controls/StartMenu/StartMenuVbox"]
+margin_top = 54.0
+margin_right = 115.0
+margin_bottom = 104.0
+rect_min_size = Vector2( 0, 50 )
+text = "Join Game"
+
+[node name="ServerLabel" type="Label" parent="Controls/StartMenu/StartMenuVbox"]
+visible = false
+margin_top = 88.0
+margin_right = 115.0
+margin_bottom = 102.0
+text = "Server:"
+
+[node name="ServerTextBox" type="TextEdit" parent="Controls/StartMenu/StartMenuVbox"]
+visible = false
+margin_top = 106.0
+margin_right = 115.0
+margin_bottom = 146.0
+rect_min_size = Vector2( 50, 40 )
+text = "192.168.1."
+
+[node name="PlayerNameLabel" type="Label" parent="Controls/StartMenu/StartMenuVbox"]
+visible = false
+margin_top = 150.0
+margin_right = 115.0
+margin_bottom = 164.0
+text = "Player Name:"
+
+[node name="PlayerNameTextBox" type="TextEdit" parent="Controls/StartMenu/StartMenuVbox"]
+visible = false
+margin_top = 168.0
+margin_right = 115.0
+margin_bottom = 208.0
+rect_min_size = Vector2( 50, 40 )
+text = "Player"
+
+[node name="ConnectGameButton" type="Button" parent="Controls/StartMenu/StartMenuVbox"]
+visible = false
+margin_top = 68.0
+margin_right = 115.0
+margin_bottom = 108.0
+rect_min_size = Vector2( 0, 50 )
+text = "Connect"
+
+[node name="DisconnectGameButton" type="Button" parent="Controls/StartMenu/StartMenuVbox"]
+visible = false
+margin_top = 68.0
+margin_right = 115.0
+margin_bottom = 108.0
+rect_min_size = Vector2( 0, 50 )
+text = "Disconnect"
+
+[node name="ReturnToGameButton" type="Button" parent="Controls/StartMenu/StartMenuVbox"]
+margin_top = 108.0
+margin_right = 115.0
+margin_bottom = 158.0
+rect_min_size = Vector2( 0, 50 )
+text = "Return To Game"
+
+[node name="QuitButton" type="Button" parent="Controls/StartMenu/StartMenuVbox"]
+margin_top = 162.0
+margin_right = 115.0
+margin_bottom = 212.0
+rect_min_size = Vector2( 0, 50 )
+text = "Quit"
 
 [node name="HandCanvas" type="CanvasLayer" parent="Controls"]
 layer = 0
@@ -193,7 +203,6 @@ margin_bottom = 122.0
 margin_right = 222.0
 margin_bottom = 200.0
 rect_min_size = Vector2( 200, 200 )
-items = [ "card 1", null, false, "card 2", null, false ]
 
 [node name="HandActionsContainer" type="HBoxContainer" parent="Controls/HandCanvas/HandContainer"]
 margin_top = 204.0
@@ -237,12 +246,12 @@ scale = Vector2( 0.756818, 0.740922 )
 z_index = -10
 texture = ExtResource( 4 )
 
-[connection signal="pressed" from="Controls/StartMenu/StartMenuPanel/StartMenuVbox/StartGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "start_game" ]]
-[connection signal="pressed" from="Controls/StartMenu/StartMenuPanel/StartMenuVbox/JoinGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "join_game" ]]
-[connection signal="pressed" from="Controls/StartMenu/StartMenuPanel/StartMenuVbox/ConnectGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "connect" ]]
-[connection signal="pressed" from="Controls/StartMenu/StartMenuPanel/StartMenuVbox/DisconnectGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "disconnect" ]]
-[connection signal="pressed" from="Controls/StartMenu/StartMenuPanel/StartMenuVbox/ReturnToGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "return_to_game" ]]
-[connection signal="pressed" from="Controls/StartMenu/StartMenuPanel/StartMenuVbox/QuitButton" to="." method="_on_start_menu_button_pressed" binds= [ "quit" ]]
+[connection signal="pressed" from="Controls/StartMenu/StartMenuVbox/StartGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "start_game" ]]
+[connection signal="pressed" from="Controls/StartMenu/StartMenuVbox/JoinGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "join_game" ]]
+[connection signal="pressed" from="Controls/StartMenu/StartMenuVbox/ConnectGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "connect" ]]
+[connection signal="pressed" from="Controls/StartMenu/StartMenuVbox/DisconnectGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "disconnect" ]]
+[connection signal="pressed" from="Controls/StartMenu/StartMenuVbox/ReturnToGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "return_to_game" ]]
+[connection signal="pressed" from="Controls/StartMenu/StartMenuVbox/QuitButton" to="." method="_on_start_menu_button_pressed" binds= [ "quit" ]]
 [connection signal="pressed" from="Controls/HandCanvas/HandContainer/HandActionsContainer/PlayButton" to="." method="_on_hand_button_pressed" binds= [ "play" ]]
 [connection signal="pressed" from="Controls/HandCanvas/HandContainer/HandActionsContainer/DiscardButton" to="." method="_on_hand_button_pressed" binds= [ "discard" ]]
 [connection signal="pressed" from="Controls/HandCanvas/HandContainer/HandActionsContainer/DrawButton" to="." method="_on_hand_button_pressed" binds= [ "draw" ]]

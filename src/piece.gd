@@ -28,6 +28,9 @@ func on_release():
 	emit_signal("new_position", self.position, piece_id)
 	print_debug("I've been released: " + piece_id)
 
+func draggable():
+	pass
+	
 func set_base_color(color_int:int = 7) -> Piece:
 	base_sprite.modulate = color_array[color_int]
 	return self
