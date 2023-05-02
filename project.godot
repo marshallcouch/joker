@@ -9,6 +9,81 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Reference",
+"class": "NakamaAPI",
+"language": "GDScript",
+"path": "res://src/nakama/api/NakamaAPI.gd"
+}, {
+"base": "Reference",
+"class": "NakamaAsyncResult",
+"language": "GDScript",
+"path": "res://src/nakama/utils/NakamaAsyncResult.gd"
+}, {
+"base": "Reference",
+"class": "NakamaClient",
+"language": "GDScript",
+"path": "res://src/nakama/client/NakamaClient.gd"
+}, {
+"base": "Reference",
+"class": "NakamaException",
+"language": "GDScript",
+"path": "res://src/nakama/utils/NakamaException.gd"
+}, {
+"base": "Node",
+"class": "NakamaHTTPAdapter",
+"language": "GDScript",
+"path": "res://src/nakama/client/NakamaHTTPAdapter.gd"
+}, {
+"base": "Reference",
+"class": "NakamaLogger",
+"language": "GDScript",
+"path": "res://src/nakama/utils/NakamaLogger.gd"
+}, {
+"base": "Reference",
+"class": "NakamaMultiplayerBridge",
+"language": "GDScript",
+"path": "res://src/nakama/utils/NakamaMultiplayerBridge.gd"
+}, {
+"base": "NakamaAsyncResult",
+"class": "NakamaRTAPI",
+"language": "GDScript",
+"path": "res://src/nakama/api/NakamaRTAPI.gd"
+}, {
+"base": "Reference",
+"class": "NakamaRTMessage",
+"language": "GDScript",
+"path": "res://src/nakama/api/NakamaRTMessage.gd"
+}, {
+"base": "Reference",
+"class": "NakamaSerializer",
+"language": "GDScript",
+"path": "res://src/nakama/utils/NakamaSerializer.gd"
+}, {
+"base": "NakamaAsyncResult",
+"class": "NakamaSession",
+"language": "GDScript",
+"path": "res://src/nakama/api/NakamaSession.gd"
+}, {
+"base": "Reference",
+"class": "NakamaSocket",
+"language": "GDScript",
+"path": "res://src/nakama/socket/NakamaSocket.gd"
+}, {
+"base": "Node",
+"class": "NakamaSocketAdapter",
+"language": "GDScript",
+"path": "res://src/nakama/socket/NakamaSocketAdapter.gd"
+}, {
+"base": "Reference",
+"class": "NakamaStorageObjectId",
+"language": "GDScript",
+"path": "res://src/nakama/api/NakamaStorageObjectId.gd"
+}, {
+"base": "Reference",
+"class": "NakamaWriteStorageObject",
+"language": "GDScript",
+"path": "res://src/nakama/api/NakamaWriteStorageObject.gd"
+}, {
 "base": "Node",
 "class": "Networking",
 "language": "GDScript",
@@ -30,6 +105,21 @@ _global_script_classes=[ {
 "path": "res://src/uuid.gd"
 } ]
 _global_script_class_icons={
+"NakamaAPI": "",
+"NakamaAsyncResult": "",
+"NakamaClient": "",
+"NakamaException": "",
+"NakamaHTTPAdapter": "",
+"NakamaLogger": "",
+"NakamaMultiplayerBridge": "",
+"NakamaRTAPI": "",
+"NakamaRTMessage": "",
+"NakamaSerializer": "",
+"NakamaSession": "",
+"NakamaSocket": "",
+"NakamaSocketAdapter": "",
+"NakamaStorageObjectId": "",
+"NakamaWriteStorageObject": "",
 "Networking": "",
 "Piece": "",
 "Utils": "",
@@ -46,6 +136,7 @@ config/windows_native_icon="res://assets/icons/Icon.ico"
 [autoload]
 
 Clicker="*res://src/clicker.gd"
+Nakama="*res://src/nakama/Nakama.gd"
 
 [display]
 

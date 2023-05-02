@@ -19,7 +19,8 @@ var debug_networking = true
 var client_packet_buffer: Array = []
 
 class Client:
-	var stream_peer: StreamPeerTCP
+	#var stream_peer: StreamPeerTCP
+	var stream_peer:StreamPeerSSL
 	var id: String
 	var packet_buffer: Array = []
 	
@@ -129,7 +130,7 @@ func server_poll() -> void:
 		client.stream_peer = server.take_connection()
 		client.id = uuid.v4()
 		server_clients.append(client)
-		client.stream_peer.set_no_delay(true)
+		#client.stream_peer.set_no_delay(true)
 		if debug_networking:
 			print("Client connected: " + client.id)
 #		var response:Dictionary = {"status":"Connected"}
