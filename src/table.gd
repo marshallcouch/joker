@@ -1,7 +1,5 @@
 extends Node2D
 
-var decks: Array = []
-var players: Array = []
 var start_menu
 var start_panel
 var start_menu_vbox
@@ -20,7 +18,6 @@ var connect_button
 var join_button
 var start_game_button
 var disconnect_game_button
-var networking:Networking = Networking.new()
 var piece_preload = preload("res://scenes/pieces/Piece.tscn")
 
 func _set_onready_variables() ->void:
@@ -54,14 +51,10 @@ class Player:
 
 func _ready() -> void:
 	#var _connected = get_tree().root.connect("size_changed",Callable(self,"_on_viewport_resized"))
-	add_child(networking)
-	_setup_deck()
 	_set_onready_variables()
-	networking.connect("data_received",self,"_data_received")
-	networking.connect("peer_connected",self,"_player_connected")
-	networking.connect("peer_disconnected",self,"_player_disconnected")
 	camera.connect("show_hand",self,"_show_hand")
 	camera.connect("menu",self,"_show_start_menu")
+	_setup_game()
 
 
 func _show_start_menu():
@@ -79,10 +72,9 @@ func _setup_game(player_count:int = 6):
 			$Boards/JokerBoard6.show()
 		8: 
 			$Boards/JokerBoard8.show()
-	discard_pile.show()
-	_set_start_button_visibility(false)
 	start_menu.hide()
-	_setup_server()
+	for p in $Pieces.get_children():
+		$Pieces.remove_child(p)
 	#load pieces
 	for i in 8:
 		for j in 5:
@@ -101,223 +93,8 @@ func _input(event) -> void:
 func _on_start_menu_button_pressed(button_pressed: String) -> void:
 	if button_pressed == "start_game":
 		_setup_game()
-	elif button_pressed == "join_game":
-		if server_label.visible:
-			server_label.hide()
-			server_text_box.hide()
-			player_name_label.hide()
-			player_name_text_box.hide()
-			connect_button.hide()
-		else:
-			server_label.show()
-			server_text_box.show()
-			player_name_label.show()
-			player_name_text_box.show()
-			connect_button.show()
-	elif button_pressed == "connect":
-		server_label.hide()
-		server_text_box.hide()
-		player_name_label.hide()
-		player_name_text_box.hide()
-		connect_button.hide()
+	if button_pressed == "return_to_game":
 		start_menu.hide()
-		_set_start_button_visibility(false)
-		_setup_client()
-	elif button_pressed == "disconnect":
-		networking.stop_game()
-		_set_start_button_visibility(true)
-	elif button_pressed == "return_to_game":
-		start_menu.hide()
-	elif button_pressed == "quit":
+	if button_pressed == "quit":
 		get_tree().quit()
-
-
-func _on_hand_button_pressed(action):
-	match action:
-		"play":
-			pass
-		"draw":
-			if networking.is_client:
-				var d:Dictionary = {"action":"draw","deck":""}
-				networking.send_packet(Utils.json_to_string(d))
-		"discard":
-			if networking.is_client:
-				var selected_card_idx:int = -1
-				for c in cards_in_hand_list.get_selected_items():
-					selected_card_idx = c
-				var selected_card: String = cards_in_hand_list.get_item_text(selected_card_idx)
-				if selected_card_idx > -1:
-					cards_in_hand_list.remove_item(selected_card_idx)
-				var d:Dictionary = {"action":"discard","card":selected_card}
-				networking.send_packet(Utils.json_to_string(d))
-		"close":
-			hand_canvas.hide()
-
-
-func _set_start_button_visibility(visible:bool = true):
-	if visible:
-		join_button.show()
-		start_game_button.show()
-		disconnect_game_button.hide()
-	else:
-		join_button.hide()
-		start_game_button.hide()
-		disconnect_game_button.show()
-
-
-func _setup_server():
-	networking.start_server()
-	var ip_text:String = ""
-	
-	if OS.has_feature("windows"):
-		if OS.has_enviroment("COMPUTERNAME"):
-			ip_text =  IP.resolve_hostname(str(OS.get_environment("COMPUTERNAME")),1)
-		if OS.has_enviroment("HOSTNAME"):
-			ip_text =  IP.resolve_hostname(str(OS.get_environment("HOSTNAME")),1)
-	elif OS.has_feature("x11"):
-		if OS.has_enviroment("HOSTNAME"):
-			ip_text =  IP.resolve_hostname(str(OS.get_environment("HOSTNAME")),1)
-	elif OS.has_feature("OSX"):
-		if OS.has_enviroment("HOSTNAME"):
-			ip_text =  IP.resolve_hostname(str(OS.get_environment("HOSTNAME")),1)
-	if ip_text == "":
-		for ip in IP.get_local_addresses():
-			if ip.find('192.168.1') > -1:
-				ip_text += ip + "\n"
-	if ip_text == "":
-		for ip in IP.get_local_addresses():
-			if ip.find(".") > 0:
-				ip_text += ip + "\n"
-	var game_file_text = "Game App: upgames.us/joker\n"
-	camera.set_server_info_label(game_file_text + "Server IP: " + ip_text )
-
-
-func _setup_client():
-	networking.join_game(server_text_box.text)
-
-
-func _setup_deck() -> void:
-	decks.append(Utils.setup_standard_deck(true,true))
-
-
-func _player_connected(peer_id):
-	var new_player = Player.new()
-	new_player.id = peer_id
-	players.append(new_player)
-	var response:Dictionary = {"action":"set_game_state"}
-	var pieces_array:Array = []
-	for piece in pieces.get_children():
-		pieces_array.append(piece.to_dictionary())
-	response.merge({"pieces":pieces_array})
-	var boards:Array = []
-	if $Boards/JokerBoard4.visible:
-		boards.append("JokerBoard4")
-	if $Boards/JokerBoard6.visible:
-		boards.append("JokerBoard6")
-	if $Boards/JokerBoard8.visible:
-		boards.append("JokerBoard8")
-		
-	response.merge({"boards":boards})
-	networking.send_packet(Utils.json_to_string(response),peer_id)
-	#todo: send gamestate
-
-
-func _player_disconnected(peer_id):
-	for i in players.size():
-		if players[i] == peer_id:
-			players.pop_at(i)
-
-
-func _data_received(message:String,peer_id):
-	var message_dict = {}
-	message_dict = Utils.string_to_json(message)
-	if message_dict["action"] == "draw":
-		_draw_card(message_dict,peer_id)
-	if message_dict["action"] == "discard":
-		_discard_card(message_dict,peer_id)
-	if message_dict["action"] == "update_piece_location":
-		_update_piece_position(Vector2(message_dict["pos"][0],message_dict["pos"][1]),message_dict["pid"],false)
-	if message_dict["action"] == "set_game_state":
-		_set_game_state(message_dict)
-
-
-func _draw_card(message_dict:Dictionary,peer_id) -> void:
-	if networking.is_server:
-		var card = ""
-		if message_dict["deck"] != "":
-			for deck in decks:
-				if "name" in deck:
-					if message_dict["deck"] == deck["name"]:
-						card = deck["cards"].pop_front()
-		else:
-			card = decks[0]["cards"].pop_front()
-		for player in players:
-			if player.id == peer_id:
-				player.hand.append(card)
-		var response:Dictionary = {"action":"draw", "card":card}
-		networking.send_packet(Utils.json_to_string(response),peer_id)
-	elif networking.is_client:
-		cards_in_hand_list.add_item(message_dict["card"]["name"])
-
-
-func _discard_card(message_dict:Dictionary,peer_id) -> void:
-	if networking.is_server:
-		for player in players:
-			var idx:int = -1
-			if player.id == peer_id:
-				for i in player.hand.size():
-					#print(message_dict["card"] + " =? " + player.hand[i]["name"])
-					if message_dict["card"] == player.hand[i]["name"]:
-						idx = i
-						#print ("match found!")
-						break
-				if idx > -1:
-					discard_pile.discard(player.hand.pop_at(idx))
-	var response:Dictionary = {"status":"success", "requested_action":"discard"}
-	networking.send_packet(Utils.json_to_string(response),peer_id)
-		
-func play_card(card_to_play:Dictionary) -> void:
-	pass
-
-func _update_piece_position(new_position:Vector2, piece_id, local:bool = true):
-	#if it's local, send it to the server, if it's not local then we got it from the network and need to update
-	# if we are the server we need to pass it along to the other clients.
-	if local and networking.is_client:
-		networking.send_packet(Utils.json_to_string({"action":"update_piece_location","pid":piece_id,"pos":[new_position.x,new_position.y]}))
-	else:
-		for piece in pieces.get_children():
-			if piece.piece_id == piece_id:
-				piece.update_position(new_position)
-	if networking.is_server:
-		networking.send_packet(Utils.json_to_string({"action":"update_piece_location","pid":piece_id,"pos":[new_position.x,new_position.y]}),"",true)
-	
-func _set_game_state(message_dict:Dictionary) -> void:
-	#reset state to blank
-	for piece in pieces.get_children():
-		pieces.remove_child(piece)
-	
-	if message_dict.has("pieces"):
-		for piece in message_dict["pieces"]:
-			var new_piece = piece_preload.instance()
-			pieces.add_child(new_piece) 
-			new_piece.from_dictionary(piece)
-			new_piece.connect("new_position",self, "_update_piece_position")
-			
-	if message_dict.has("boards"):
-		for board in message_dict["boards"]:
-			if board == "JokerBoard4":
-				$Boards/JokerBoard4.show()
-			elif board == "JokerBoard6":
-				$Boards/JokerBoard6.show()
-			elif board == "JokerBoard8":
-				$Boards/JokerBoard8.show()
-		
-
-func _show_hand():
-	hand_container.set_position(Vector2(get_viewport().size.x *.1,get_viewport().size.y *.4))
-	hand_container.set_size( Vector2(get_viewport().size.x *.8,get_viewport().size.y *5 ))
-	if hand_canvas.visible:
-		hand_canvas.hide()
-	else:
-		hand_canvas.show()
 	

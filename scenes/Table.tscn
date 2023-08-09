@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://src/table.gd" type="Script" id=1]
 [ext_resource path="res://scenes/Camera.tscn" type="PackedScene" id=2]
@@ -6,11 +6,7 @@
 [ext_resource path="res://assets/sprites/JokerBoard.jpg" type="Texture" id=4]
 [ext_resource path="res://assets/sprites/background.jpg" type="Texture" id=5]
 [ext_resource path="res://assets/sprites/boards/joker_6.png" type="Texture" id=6]
-[ext_resource path="res://src/discardPile.gd" type="Script" id=7]
 [ext_resource path="res://assets/sprites/boards/joker_8.png" type="Texture" id=8]
-
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 131, 69 )
 
 [node name="Table" type="Node2D"]
 script = ExtResource( 1 )
@@ -21,30 +17,6 @@ layer = -10
 [node name="Sprite" type="Sprite" parent="TableBackground"]
 scale = Vector2( 2, 2 )
 texture = ExtResource( 5 )
-
-[node name="Cards" type="Node" parent="."]
-
-[node name="DiscardArea" type="Area2D" parent="Cards"]
-position = Vector2( 400, 0 )
-z_index = 1
-script = ExtResource( 7 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Cards/DiscardArea"]
-position = Vector2( 301, 68 )
-shape = SubResource( 1 )
-
-[node name="DiscardPile" type="ItemList" parent="Cards/DiscardArea"]
-margin_left = 167.0
-margin_top = -1.0
-margin_right = 432.0
-margin_bottom = 139.0
-
-[node name="DiscardLabel" type="Label" parent="Cards/DiscardArea/DiscardPile"]
-margin_left = 173.0
-margin_top = 119.0
-margin_right = 249.0
-margin_bottom = 133.0
-text = "Discard Pile"
 
 [node name="Boards" type="Node" parent="."]
 
@@ -73,7 +45,6 @@ texture = ExtResource( 8 )
 
 [node name="StartMenu" type="CanvasLayer" parent="Controls"]
 layer = 2
-visible = false
 
 [node name="StartMenuPanel" type="Panel" parent="Controls/StartMenu"]
 modulate = Color( 1, 1, 1, 0.752941 )
@@ -107,135 +78,25 @@ grow_vertical = 2
 alignment = 1
 
 [node name="StartGameButton" type="Button" parent="Controls/StartMenu/StartMenuVbox"]
+margin_top = 27.0
 margin_right = 115.0
-margin_bottom = 50.0
+margin_bottom = 77.0
 rect_min_size = Vector2( 0, 50 )
-text = "Start Game"
-
-[node name="JoinGameButton" type="Button" parent="Controls/StartMenu/StartMenuVbox"]
-margin_top = 54.0
-margin_right = 115.0
-margin_bottom = 104.0
-rect_min_size = Vector2( 0, 50 )
-text = "Join Game"
-
-[node name="ServerLabel" type="Label" parent="Controls/StartMenu/StartMenuVbox"]
-visible = false
-margin_top = 88.0
-margin_right = 115.0
-margin_bottom = 102.0
-text = "Server:"
-
-[node name="ServerTextBox" type="TextEdit" parent="Controls/StartMenu/StartMenuVbox"]
-visible = false
-margin_top = 106.0
-margin_right = 115.0
-margin_bottom = 146.0
-rect_min_size = Vector2( 50, 40 )
-text = "192.168.1."
-
-[node name="PlayerNameLabel" type="Label" parent="Controls/StartMenu/StartMenuVbox"]
-visible = false
-margin_top = 150.0
-margin_right = 115.0
-margin_bottom = 164.0
-text = "Player Name:"
-
-[node name="PlayerNameTextBox" type="TextEdit" parent="Controls/StartMenu/StartMenuVbox"]
-visible = false
-margin_top = 168.0
-margin_right = 115.0
-margin_bottom = 208.0
-rect_min_size = Vector2( 50, 40 )
-text = "Player"
-
-[node name="ConnectGameButton" type="Button" parent="Controls/StartMenu/StartMenuVbox"]
-visible = false
-margin_top = 68.0
-margin_right = 115.0
-margin_bottom = 108.0
-rect_min_size = Vector2( 0, 50 )
-text = "Connect"
-
-[node name="DisconnectGameButton" type="Button" parent="Controls/StartMenu/StartMenuVbox"]
-visible = false
-margin_top = 68.0
-margin_right = 115.0
-margin_bottom = 108.0
-rect_min_size = Vector2( 0, 50 )
-text = "Disconnect"
+text = "Start New Game"
 
 [node name="ReturnToGameButton" type="Button" parent="Controls/StartMenu/StartMenuVbox"]
-margin_top = 108.0
+margin_top = 81.0
 margin_right = 115.0
-margin_bottom = 158.0
+margin_bottom = 131.0
 rect_min_size = Vector2( 0, 50 )
 text = "Return To Game"
 
 [node name="QuitButton" type="Button" parent="Controls/StartMenu/StartMenuVbox"]
-margin_top = 162.0
+margin_top = 135.0
 margin_right = 115.0
-margin_bottom = 212.0
+margin_bottom = 185.0
 rect_min_size = Vector2( 0, 50 )
 text = "Quit"
-
-[node name="HandCanvas" type="CanvasLayer" parent="Controls"]
-layer = 0
-visible = false
-
-[node name="HandPanel" type="Panel" parent="Controls/HandCanvas"]
-visible = false
-margin_right = 200.0
-margin_bottom = 400.0
-rect_min_size = Vector2( 200, 400 )
-
-[node name="HandContainer" type="VBoxContainer" parent="Controls/HandCanvas"]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -100.5
-margin_top = -122.0
-margin_right = 100.5
-margin_bottom = 122.0
-
-[node name="CardsInHand" type="ItemList" parent="Controls/HandCanvas/HandContainer"]
-margin_right = 222.0
-margin_bottom = 200.0
-rect_min_size = Vector2( 200, 200 )
-
-[node name="HandActionsContainer" type="HBoxContainer" parent="Controls/HandCanvas/HandContainer"]
-margin_top = 204.0
-margin_right = 222.0
-margin_bottom = 254.0
-alignment = 1
-
-[node name="PlayButton" type="Button" parent="Controls/HandCanvas/HandContainer/HandActionsContainer"]
-margin_right = 50.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 50, 50 )
-text = "Play"
-
-[node name="DiscardButton" type="Button" parent="Controls/HandCanvas/HandContainer/HandActionsContainer"]
-margin_left = 54.0
-margin_right = 114.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 50, 50 )
-text = "Discard"
-
-[node name="DrawButton" type="Button" parent="Controls/HandCanvas/HandContainer/HandActionsContainer"]
-margin_left = 118.0
-margin_right = 168.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 50, 50 )
-text = "Draw"
-
-[node name="CloseButton" type="Button" parent="Controls/HandCanvas/HandContainer/HandActionsContainer"]
-margin_left = 172.0
-margin_right = 222.0
-margin_bottom = 50.0
-rect_min_size = Vector2( 50, 50 )
-text = "Close"
 
 [node name="_debug" type="Node" parent="."]
 
@@ -247,14 +108,7 @@ z_index = -10
 texture = ExtResource( 4 )
 
 [connection signal="pressed" from="Controls/StartMenu/StartMenuVbox/StartGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "start_game" ]]
-[connection signal="pressed" from="Controls/StartMenu/StartMenuVbox/JoinGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "join_game" ]]
-[connection signal="pressed" from="Controls/StartMenu/StartMenuVbox/ConnectGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "connect" ]]
-[connection signal="pressed" from="Controls/StartMenu/StartMenuVbox/DisconnectGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "disconnect" ]]
 [connection signal="pressed" from="Controls/StartMenu/StartMenuVbox/ReturnToGameButton" to="." method="_on_start_menu_button_pressed" binds= [ "return_to_game" ]]
 [connection signal="pressed" from="Controls/StartMenu/StartMenuVbox/QuitButton" to="." method="_on_start_menu_button_pressed" binds= [ "quit" ]]
-[connection signal="pressed" from="Controls/HandCanvas/HandContainer/HandActionsContainer/PlayButton" to="." method="_on_hand_button_pressed" binds= [ "play" ]]
-[connection signal="pressed" from="Controls/HandCanvas/HandContainer/HandActionsContainer/DiscardButton" to="." method="_on_hand_button_pressed" binds= [ "discard" ]]
-[connection signal="pressed" from="Controls/HandCanvas/HandContainer/HandActionsContainer/DrawButton" to="." method="_on_hand_button_pressed" binds= [ "draw" ]]
-[connection signal="pressed" from="Controls/HandCanvas/HandContainer/HandActionsContainer/CloseButton" to="." method="_on_hand_button_pressed" binds= [ "close" ]]
 
 [editable path="Controls/Camera"]
