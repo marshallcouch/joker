@@ -3,42 +3,19 @@ extends Node2D
 var start_menu
 var start_panel
 var start_menu_vbox
-var discard_pile
-var cards_in_hand_list
-var hand_container
-var hand_panel
-var hand_canvas
 var pieces
 var camera
-var server_label
-var server_text_box
-var player_name_label
-var player_name_text_box
-var connect_button
-var join_button
 var start_game_button
-var disconnect_game_button
 var piece_preload = preload("res://scenes/pieces/Piece.tscn")
 
 func _set_onready_variables() ->void:
 	start_menu = $Controls/StartMenu
 	start_panel = $Controls/StartMenu/StartMenuPanel
 	start_menu_vbox = $Controls/StartMenu/StartMenuPanel/StartMenuVbox
-	discard_pile = $Cards/DiscardArea
-	cards_in_hand_list = $Controls/HandCanvas/HandContainer/CardsInHand
-	hand_container = $Controls/HandCanvas/HandContainer
-	hand_panel = $Controls/HandCanvas/HandPanel
-	hand_canvas = $Controls/HandCanvas
 	pieces = $Pieces
 	camera = $Controls/Camera
-	server_label = $Controls/StartMenu/StartMenuVbox/ServerLabel
-	server_text_box = $Controls/StartMenu/StartMenuVbox/ServerTextBox
-	player_name_label = $Controls/StartMenu/StartMenuVbox/PlayerNameLabel
-	player_name_text_box = $Controls/StartMenu/StartMenuVbox/PlayerNameTextBox
-	connect_button = $Controls/StartMenu/StartMenuVbox/ConnectGameButton
-	join_button = $Controls/StartMenu/StartMenuVbox/JoinGameButton
 	start_game_button = $Controls/StartMenu/StartMenuVbox/StartGameButton
-	disconnect_game_button = $Controls/StartMenu/StartMenuVbox/DisconnectGameButton
+
 
 class Player:
 	var id:String
@@ -83,7 +60,7 @@ func _setup_game(player_count:int = 6):
 			piece.set_base_color(i).set_icon_color(7).scale_piece(Vector2(1,1)).set_icon(i+1)
 			piece.position = Vector2(-100+(1+i)*20,-100+(1+j)*20)
 			piece.connect("new_position",self,"_update_piece_position")
-			print(piece)
+			#print(piece)
 
 
 func _input(event) -> void:

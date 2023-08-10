@@ -22,11 +22,12 @@ func _ready() -> void:
 	piece_base = $PieceBase
 
 func on_click():
-	print_debug("I've been selected: " + piece_id)
+	#print_debug("I've been selected: " + piece_id)
+	pass
 
 func on_release():
 	emit_signal("new_position", self.position, piece_id)
-	print_debug("I've been released: " + piece_id)
+	print_debug("I've been released: " + piece_id + "at" + str(self.position))
 
 func draggable():
 	pass

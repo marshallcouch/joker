@@ -1,7 +1,8 @@
 extends Node2D
 
 func on_click() -> void:
-	print_debug("cam area")
+	#print_debug("cam area")
+	pass
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta: float) -> void:
 #	pass
