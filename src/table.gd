@@ -11,7 +11,6 @@ var piece_preload = preload("res://scenes/pieces/Piece.tscn")
 func _set_onready_variables() ->void:
 	start_menu = $Controls/StartMenu
 	start_panel = $Controls/StartMenu/StartMenuPanel
-	start_menu_vbox = $Controls/StartMenu/StartMenuPanel/StartMenuVbox
 	pieces = $Pieces
 	camera = $Controls/Camera
 	start_game_button = $Controls/StartMenu/StartMenuVbox/StartGameButton
@@ -53,14 +52,26 @@ func _setup_game(player_count:int = 6):
 	for p in $Pieces.get_children():
 		$Pieces.remove_child(p)
 	#load pieces
-	for i in 8:
+	var file = File.new()
+	file.open("res://assets/json/piece_locations.tres",File.READ)
+	var piece_locations = file.get_as_text()
+	piece_locations = piece_locations.replace("[gd_resource type=\"Resource\" format=2]","").replace("[resource]","")
+	var positions = JSON.parse(piece_locations).result
+	
+	for i in 4:
 		for j in 5:
 			var piece = piece_preload.instance()
 			pieces.add_child(piece)
 			piece.set_base_color(i).set_icon_color(7).scale_piece(Vector2(1,1)).set_icon(i+1)
-			piece.position = Vector2(-100+(1+i)*20,-100+(1+j)*20)
+			piece.position = Vector2(positions["4_player"][i][j][0],positions["4_player"][i][j][1])
 			piece.connect("new_position",self,"_update_piece_position")
-			#print(piece)
+	for i in 6:
+		for j in 5:
+			var piece = piece_preload.instance()
+			pieces.add_child(piece)
+			piece.set_base_color(i).set_icon_color(7).scale_piece(Vector2(1,1)).set_icon(i+1)
+			piece.position = Vector2(positions["6_player"][i][j][0],positions["6_player"][i][j][1])
+			piece.connect("new_position",self,"_update_piece_position")
 
 
 func _input(event) -> void:

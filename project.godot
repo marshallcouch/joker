@@ -40,7 +40,6 @@ config/windows_native_icon="res://assets/icons/Icon.ico"
 [autoload]
 
 Clicker="*res://src/clicker.gd"
-Nakama="*res://src/nakama/Nakama.gd"
 
 [display]
 

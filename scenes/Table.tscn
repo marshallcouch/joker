@@ -16,6 +16,7 @@ layer = -10
 
 [node name="Sprite" type="Sprite" parent="TableBackground"]
 scale = Vector2( 2, 2 )
+z_index = -100
 texture = ExtResource( 5 )
 
 [node name="Boards" type="Node" parent="."]
@@ -42,6 +43,10 @@ texture = ExtResource( 8 )
 [node name="Controls" type="Node" parent="."]
 
 [node name="Camera" parent="Controls" instance=ExtResource( 2 )]
+z_index = -1000
+
+[node name="CollisionShape2D" parent="Controls/Camera/Area2D" index="0"]
+position = Vector2( 4.875, 17 )
 
 [node name="StartMenu" type="CanvasLayer" parent="Controls"]
 layer = 2
